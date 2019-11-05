@@ -1,13 +1,11 @@
-import React, {useState} from 'react';
-import {SafeAreaView, View} from 'react-native';
+import React, {Fragment, useState} from 'react';
 import {
-  VictoryContainer,
   VictoryChart,
+  VictoryScatter,
   VictoryTheme,
   VictoryPolarAxis,
   VictoryGroup,
   VictoryArea,
-  VictoryLabel,
   Arc,
 } from 'victory-native';
 import styled from 'styled-components';
@@ -63,50 +61,80 @@ const RNRadar = props => {
   const [data] = useState(processData(characterData));
   const [maxima] = useState(getMaxima(characterData));
   return (
-    <Container>
-      <VictoryChart polar theme={VictoryTheme.material} domain={{y: [0, 1]}}>
-        <VictoryGroup
-          animate={{
-            duration: 500,
-            onLoad: {duration: 500},
-          }}
-          colorScale={['#303030', '#fae56d']}
+    <Fragment>
+      <Container>
+        <VictoryChart
+          polar
           style={{
-            data: {fillOpacity: 1, strokeWidth: 0},
+            parent: {
+              zIndex: 10,
+            },
           }}>
-          {data.map((data, i) => {
-            return <VictoryArea key={i} data={data} />;
+          {Object.keys(maxima).map((key, i) => {
+            return (
+              <VictoryPolarAxis
+                key={i}
+                dependentAxis
+                style={{
+                  parent: {
+                    zIndex: 10,
+                  },
+                  axisLabel: {
+                    fontSize: 14,
+                    fill: '#ffffff',
+                    padding: 15,
+                  },
+                  grid: {
+                    stroke: '#626262',
+                    strokeWidth: 3,
+                    opacity: 1,
+                  },
+                  axis: {stroke: '#e4e4e4', strokeWidth: 1, opacity: 0.2},
+                  tickLabels: {fill: 'none'},
+                }}
+                labelPlacement="perpendicular"
+                tickValues={[0.4, 0.6, 0.8, 1.0]}
+                axisValue={i + 1}
+                label={key}
+                tickFormat={() => null}
+              />
+            );
           })}
-        </VictoryGroup>
-        {Object.keys(maxima).map((key, i) => {
-          return (
-            <VictoryPolarAxis
-              key={i}
-              dependentAxis
-              style={{
-                axisLabel: {
-                  fontSize: 14,
-                  fill: '#ffffff',
-                  padding: 20,
-                },
-                grid: {
-                  stroke: '#626262',
-                  strokeWidth: 1,
-                  opacity: 1,
-                },
-                axis: {stroke: '#e4e4e4', strokeWidth: 1, opacity: 0.2},
-                tickLabels: {fill: 'none'},
-              }}
-              labelPlacement="vertical"
-              tickValues={[0.4, 0.6, 0.8, 1.0]}
-              axisValue={i + 1}
-              label={key}
-              tickFormat={(t) => Math.ceil(t * maxima[key])}
-            />
-          );
-        })}
-      </VictoryChart>
-    </Container>
+          <VictoryGroup
+            animate={{
+              duration: 500,
+              onLoad: {duration: 500},
+            }}
+            colorScale={['rgba(48, 48, 48, 0)', '#fae56d']}
+            style={{
+              parent: {
+                zIndex: 9999,
+              },
+              data: {fillOpacity: 1, strokeWidth: 0},
+            }}>
+            {data.map((data, i) => {
+              return <VictoryArea key={i} data={data} />;
+            })}
+          </VictoryGroup>
+          <VictoryScatter
+            style={{
+              data: {fill: '#b8b8b8'},
+            }}
+            size={3}
+            data={[
+              {x: 0, y: 1},
+              {x: 1, y: 1},
+              {x: 2, y: 1},
+              {x: 3, y: 1},
+              {x: 4, y: 1},
+              {x: 5, y: 1},
+              {x: 6, y: 1},
+              {x: 7, y: 1},
+            ]}
+          />
+        </VictoryChart>
+      </Container>
+    </Fragment>
   );
 };
 
