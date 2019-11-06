@@ -107,9 +107,6 @@ const RNRadar = props => {
             }}
             colorScale={['rgba(48, 48, 48, 0)', '#fae56d']}
             style={{
-              parent: {
-                zIndex: 9999,
-              },
               data: {fillOpacity: 1, strokeWidth: 0},
             }}>
             {data.map((data, i) => {
